@@ -1,0 +1,29 @@
+# TransUNet模型配置
+model_type: transunet
+in_channels: 1
+num_classes: 1
+features: [64, 128, 256, 512]
+img_size: 256
+patch_size: 16
+embed_dim: 768
+depth: 12
+n_heads: 12
+
+# 训练参数
+max_epochs: 100
+batch_size: 16
+learning_rate: 0.00005  # 更小的学习率以适应Transformer模型
+weight_decay: 0.01
+min_lr: 0.000001
+patience: 15  # 增加早停耐心以适应Transformer的训练特性
+gradient_clip_val: 1.0
+
+# 数据参数
+data_dir: processed_data
+num_workers: 8
+fold: 5
+center_crop: true
+
+# 输出参数
+output_dir: compare_experiments/transunet_experiment/output
+precision: 16 

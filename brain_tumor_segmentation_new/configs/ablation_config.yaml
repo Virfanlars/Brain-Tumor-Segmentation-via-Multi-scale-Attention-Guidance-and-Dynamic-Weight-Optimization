@@ -1,0 +1,70 @@
+# 消融实验配置文件
+
+# 数据设置
+data_dir: "processed_data"  # 数据目录
+fold: 1  # 使用的交叉验证折
+img_size: [256, 256]  # 输入图像大小
+in_channels: 1  # 输入通道数
+num_classes: 3  # 类别数量 (背景 + 肿瘤类型)
+batch_size: 16  # 批量大小
+num_workers: 4  # 数据加载器工作线程数
+center_crop: true  # 是否执行中心裁剪
+
+# 模型设置
+model:
+  encoder_dims: [64, 128, 256, 512]  # 编码器维度
+  decoder_dim: 128  # 解码器维度
+  dropout_ratio: 0.1  # dropout比例
+
+# 训练设置
+train:
+  epochs: 50  # 训练轮数
+  lr: 0.001  # 学习率
+  weight_decay: 0.0001  # 权重衰减
+  scheduler: "cosine"  # 学习率调度器类型
+  warmup_epochs: 5  # 预热轮数
+  early_stop: 10  # 早停轮数
+
+# 消融设置
+ablation:
+  experiments:
+    - name: "完整模型"
+      model_type: "full"
+      use_csda: true
+      use_dwd: true
+      loss_type: "dynamic"
+      
+    - name: "无CSDA"
+      model_type: "no_csda"
+      use_csda: false
+      use_dwd: true
+      loss_type: "dynamic"
+      
+    - name: "无DWD"
+      model_type: "no_dwd"
+      use_csda: true
+      use_dwd: false
+      loss_type: "dynamic"
+      
+    - name: "固定权重Dice"
+      model_type: "full"
+      use_csda: true
+      use_dwd: true
+      loss_type: "fixed_dice"
+      
+    - name: "Focal Loss"
+      model_type: "full"
+      use_csda: true
+      use_dwd: true
+      loss_type: "focal"
+
+# 评估设置
+eval:
+  metrics: ["dice", "iou", "precision", "recall", "specificity", "hd95"]
+  visualize: true  # 是否生成可视化结果
+  visualize_samples: 3  # 生成可视化结果的样本数量
+
+# 输出设置
+output_dir: "results/ablation"  # 结果输出目录
+save_models: true  # 是否保存模型
+save_predictions: true  # 是否保存预测结果 

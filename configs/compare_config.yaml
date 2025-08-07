@@ -1,0 +1,54 @@
+# Configuration file for comparison experiments
+
+# Data settings
+data_dir: "data/processed"  # Data directory
+fold: 5  # Cross-validation fold to use
+img_size: [256, 256]  # Input image size
+in_channels: 1  # Input channels
+num_classes: 3  # Number of classes (background + tumor types)
+batch_size: 8  # Batch size
+num_workers: 4  # Number of data loading workers
+center_crop: true  # Whether to perform center cropping
+
+# Model settings
+models:
+  unet:
+    name: "UNet"
+    weight_path: "/home/wf/data1/cut/brain_tumor_segmentation/output/unet/fold_5/checkpoints/epoch=06-val/dice=0.8095.ckpt"
+    features: [64, 128, 256, 512]
+    out_channels: 1
+  
+  transunet:
+    name: "TransUNet"
+    weight_path: "/home/wf/data1/cut/brain_tumor_segmentation/output/transunet/fold_5/checkpoints/epoch=13-val/dice=0.8507.ckpt"
+    img_size: 256
+    patch_size: 16
+    embed_dim: 768
+    depth: 12
+    n_heads: 12
+    features: [64, 128, 256, 512]
+    out_channels: 1
+  
+  hnfnetv2:
+    name: "HNF-Netv2"
+    weight_path: "/home/wf/data1/cut/brain_tumor_segmentation/output/hnfnetv2/fold_5/checkpoints/epoch=04-val/dice=0.8569.ckpt"
+    features: [64, 128, 256, 512]
+    out_channels: 1
+  
+  braintumorsegnet:
+    name: "Proposed Method"
+    weight_path: "/home/wf/data1/cut/brain_tumor_segmentation/output/brain_tumor_seg_fold5/checkpoints/epoch=50-val/dice=0.9165.ckpt"
+    encoder_dims: [64, 128, 256, 512]
+    decoder_dim: 128
+    dropout_ratio: 0.1
+    out_channels: 1
+
+# Evaluation settings
+eval:
+  metrics: ["dice", "iou", "precision", "recall", "specificity", "hd95"]
+  visualize: true  # Whether to generate visualization results
+  visualize_samples: 5  # Number of samples to visualize
+
+# Output settings
+output_dir: "results/comparison/com"  # Results output directory
+save_predictions: true  # Whether to save prediction results 

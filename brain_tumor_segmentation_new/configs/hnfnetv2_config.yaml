@@ -1,0 +1,69 @@
+# 基本配置
+exp_name: brain_tumor_seg_hnfnetv2
+output_dir: ./output/hnfnetv2
+seed: 42
+
+# 数据配置
+data_dir: ./processed_data
+num_folds: 5
+in_channels: 1
+num_classes: 1
+crop_size: [256, 256]
+center_crop: true
+
+# 模型配置
+model_type: hnfnetv2
+model:
+  base_channels: 32
+  num_stages: 4
+  depth: [2, 2, 8, 2]
+  drop_path_rate: 0.2
+  layer_scale_init_value: 1.0e-6
+  head_channels: 512
+  fusion_channels: 256
+  use_checkpoint: false
+
+# 训练配置
+batch_size: 4
+accumulate_grad_batches: 4
+learning_rate: 2.0e-4
+weight_decay: 0.05
+min_lr: 1.0e-6
+max_epochs: 100
+patience: 12
+precision: 16
+gradient_clip_val: 1.0
+
+# 数据增强
+augmentations:
+  use_augmentation: true
+  horizontal_flip_prob: 0.5
+  vertical_flip_prob: 0.5
+  rotation_prob: 0.5
+  rotation_degrees: 15
+  elastic_deformation_prob: 0.5
+  elastic_sigma: 10
+  elastic_alpha: 50
+  gaussian_noise_prob: 0.5
+  contrast_prob: 0.5
+  contrast_limit: 0.2
+  brightness_prob: 0.5
+  brightness_limit: 0.15
+
+# 损失函数配置
+loss:
+  dice_weight: 0.6
+  bce_weight: 0.4
+  smooth: 1.0e-5
+  class_weights: [0.5, 0.3, 0.2]  # ET, TC, WT 的权重
+
+# 评估配置
+evaluation:
+  metrics: ['dice', 'iou', 'hd95', 'precision', 'recall', 'f1']
+  threshold: 0.5
+  visualize: true
+  save_outputs: true
+
+# 系统配置
+num_workers: 4
+pin_memory: true 
